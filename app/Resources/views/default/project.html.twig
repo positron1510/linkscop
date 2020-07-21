@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список заданий{% endblock %}
+
+{% block style %}
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <a class="btn btn-danger" href="{{ path('list_task') }}">Назад</a>
+        <h2 class="text-muted"><span class="text-success">Название задачи:</span> {{ task.name }}</h2>
+        <p class="text-muted">
+            <strong class="text-success">Регион:</strong> {{ task.region.name }}
+            <strong class="text-success">Топ:</strong> {{ task.top.name }}
+        </p>
+    </div>
+    {% for key,page in task.page %}
+        <div class="col-md-12">
+            <p><strong class="text-success">Страница:</strong> <a href="{{ page.page }}" target="_blank">{{ page.page|cut_sharp }}</a></p>
+        </div>
+        <div class="col-md-6 bottom20">
+            <table class="table task-words">
+                <thead>
+                    <tr>
+                        <th>Запрос</th>
+                        <th>!Wordstat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for phrase in page.phrase %}
+                    <tr>
+                        <td>{{ phrase.phrase }}</td>
+                        <td class="text-muted">{{ phrase.wordstat }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 bottom20">
+            <table class="table task-domain">
+                <thead>
+                <tr>
+                    <th>Сайт</th>
+                    <th>Видимость</th>
+                    <th>Доменов</th>
+                    <th>Ссылок</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for topDomains in page.topDomains %}
+                    <tr>
+                        <td>
+                            <a href="{{ topDomains.domain.domain|cut_sharp }}" target="_blank">
+                                {% if topDomains.domain.domain|length > 40 %}
+                                    {% if topDomains.domain.domain|cut_sharp == page.page|cut_sharp %}
+                                        <strong>{{ topDomains.domain.domain|slice(0, 40)|cut_sharp }}...</strong>
+                                    {% else %}
+                                        {{ topDomains.domain.domain|slice(0, 40)|cut_sharp }}...
+                                    {% endif %}
+                                {% else %}
+                                    {% if topDomains.domain.domain|cut_sharp == page.page|cut_sharp %}
+                                        <strong>{{ topDomains.domain.domain|cut_sharp }}</strong>
+                                    {% else %}
+                                        {{ topDomains.domain.domain|cut_sharp }}
+                                    {% endif %}
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="text-muted">{{ topDomains.visible }}</td>
+                        <td>
+                            <a class="text-info" target="_blank" href="https://ru.majestic.com/reports/site-explorer/referring-domains?folder=&q={{ topDomains.domain.domain|wwwUrl(topDomains.domain.isWWW) }}&oq={{ topDomains.domain.domain|wwwUrl(topDomains.domain.isWWW) }}&IndexDataSource=F">
+                                {{ topDomains.domain.domains }}
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-warning" target="_blank" href="https://ru.majestic.com/reports/site-explorer/top-domains?folder=&q={{ topDomains.domain.domain|wwwUrl(topDomains.domain.isWWW) }}&oq={{ topDomains.domain.domain|wwwUrl(topDomains.domain.isWWW) }}&IndexDataSource=F">
+                                {{ topDomains.domain.hrefs }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if key in keys %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {% if kostyl[key].page|length > 40 %}
+                                    <a href="{{ kostyl[key].page }}" target="_blank">{{ kostyl[key].page|slice(0, 40) }}...</a>
+                                {% else %}
+                                    <a href="{{ kostyl[key].page }}" target="_blank">{{ kostyl[key].page }}...</a>
+                                {% endif %}
+                            </strong>
+                        </td>
+                        <td class="text-muted">{{ kostyl[key].visible }}</td>
+                        <td><a href="https://ru.majestic.com/reports/site-explorer/referring-domains?folder=&q={{ kostyl[key].page }}&oq={{ kostyl[key].page }}&IndexDataSource=F" target="_blank" class="text-info">{{ kostyl[key].domains }}</a></td>
+                        <td><a href="https://ru.majestic.com/reports/site-explorer/top-domains?folder=&q={{ kostyl[key].page }}&oq={{ kostyl[key].page }}&IndexDataSource=F" target="_blank" class="text-info" class="text-warning">{{ kostyl[key].links }}</a></td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js" type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="application/javascript"></script>
+    <script src="{{ asset('public/js/task.js') }}" type="application/javascript"></script>
+{% endblock %}

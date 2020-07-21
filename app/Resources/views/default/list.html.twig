@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список заданий{% endblock %}
+
+{% block style %}
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <a class="btn btn-success" href="{{ path('create_task') }}">Создать задачу</a>
+    </div>
+    <div class="col-md-12 top20">
+        <table id="task" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Дата обработки</th>
+                    <th>Состояние</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="checkRemove" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p class="text-danger">Вы действительно хотите удалить этот анализ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="remove-task" type="button" class="btn btn-success" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js" type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="application/javascript"></script>
+    <script src="{{ asset('public/js/status-tasks.js') }}" type="application/javascript"></script>
+{% endblock %}

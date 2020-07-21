@@ -1,0 +1,44 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+    metrics.user: textraktor
+    metrics.pass: OkHovbems
+
+    majestic.key: 16FBBF1DA62B0A1C8107EA8EDF534442
+
+    file_directory: '%kernel.root_dir%/../web/uploads/'
+
+services:
+    app.consumer.tasks:
+        class: AppBundle\Consumer\TasksConsumer
+        arguments: ["@snc_redis.default", "@parser_wordstat", "@parser_top", "@parser_majestic"]
+
+    parser_wordstat:
+        class: AppBundle\Services\Parser\Wordstat
+        arguments: ["@snc_redis.default", "%metrics.user%", "%metrics.pass%"]
+
+    parser_top:
+        class: AppBundle\Services\Parser\Top
+        arguments: ["@snc_redis.default", "%metrics.user%", "%metrics.pass%"]
+
+    parser_majestic:
+        class: AppBundle\Services\Parser\Majestic
+        arguments: ["@snc_redis.default", "%majestic.key%"]
+
+    parser_string:
+        class: AppBundle\Services\ParserString
+        arguments: ["%file_directory%"]
+
+    visible:
+        class: AppBundle\Services\Visible
+
+    www_url.twig_extension:
+        class: AppBundle\Twig\WwwUrlExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    cut_sharp.twig_extension:
+            class: AppBundle\Twig\CutSharpExtension
+            tags:
+                - { name: twig.extension }

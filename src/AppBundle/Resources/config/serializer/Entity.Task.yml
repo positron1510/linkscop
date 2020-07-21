@@ -1,0 +1,16 @@
+AppBundle\Entity\Task:
+    exclusion_policy: ALL
+    properties:
+        id:    
+            expose: true
+            groups: [tasks]
+        name:
+            expose: true
+            groups: [tasks]
+        status:
+            expose: true
+            groups: [tasks]
+        createdAt:
+            expose: true
+            groups: [tasks]
+            type: DateTime<"Y-m-d H:i:s">

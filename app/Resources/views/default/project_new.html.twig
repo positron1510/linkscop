@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список заданий{% endblock %}
+
+{% block style %}
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <a class="btn btn-danger" href="{{ path('list_task') }}">Назад</a>
+        <h2 class="text-muted"><span class="text-success">Название задачи:</span> {{ task['task'] }}</h2>
+        <p class="text-muted">
+            <strong class="text-success">Регион:</strong> {{ task['region'] }}
+            <strong class="text-success">Топ:</strong> {{ task['top'] }}
+        </p>
+    </div>
+    {% for url,page in task['pages'] %}
+        <div class="col-md-12">
+            <p><strong class="text-success">Страница:</strong> <a href="{{ url }}" target="_blank">{{ url|cut_sharp }}</a></p>
+        </div>
+        <div class="col-md-6 bottom20">
+            <table class="table task-words">
+                <thead>
+                <tr>
+                    <th>Запрос</th>
+                    <th>!Wordstat</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for phrase in page['phrases'] %}
+                    <tr>
+                        <td>{{ phrase['phrase'] }}</td>
+                        <td class="text-muted">{{ phrase['wordstat'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6 bottom20">
+            <table class="table task-domain">
+                <thead>
+                <tr>
+                    <th>Сайт</th>
+                    <th>Видимость</th>
+                    <th>Доменов</th>
+                    <th>Ссылок</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for topDomains in page['domains'] %}
+                    <tr>
+                        <td>
+                            <a href="{{ topDomains['domain']|cut_sharp }}" target="_blank">
+                                {% if topDomains['domain']|length > 40 %}
+                                    {% if topDomains['domain']|cut_sharp == url|cut_sharp %}
+                                        <strong>{{ topDomains['domain']|slice(0, 40)|cut_sharp }}...</strong>
+                                    {% else %}
+                                        {{ topDomains['domain']|slice(0, 40)|cut_sharp }}...
+                                    {% endif %}
+                                {% else %}
+                                    {% if topDomains['domain']|cut_sharp == url|cut_sharp %}
+                                        <strong>{{ topDomains['domain']|cut_sharp }}</strong>
+                                    {% else %}
+                                        {{ topDomains['domain']|cut_sharp }}
+                                    {% endif %}
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="text-muted">{{ topDomains['visible'] }}</td>
+                        <td>
+                            <a class="text-info" target="_blank" href="https://ru.majestic.com/reports/site-explorer/referring-domains?folder=&q={{ topDomains['domain']|wwwUrl(topDomains['is_www']) }}&oq={{ topDomains['domain']|wwwUrl(topDomains['is_www']) }}&IndexDataSource=F">
+                                {{ topDomains['domains'] }}
+                            </a>
+                        </td>
+                        <td>
+                            <a class="text-warning" target="_blank" href="https://ru.majestic.com/reports/site-explorer/top-domains?folder=&q={{ topDomains['domain']|wwwUrl(topDomains['is_www']) }}&oq={{ topDomains['domain']|wwwUrl(topDomains['is_www']) }}&IndexDataSource=F">
+                                {{ topDomains['hrefs'] }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js" type="application/javascript"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="application/javascript"></script>
+    <script src="{{ asset('public/js/task.js') }}" type="application/javascript"></script>
+{% endblock %}

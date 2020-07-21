@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Создать задачу{% endblock %}
+
+{% block style %}
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <a class="btn btn-danger" href="{{ path('list_task') }}">Назад</a>
+    </div>
+    <div class="col-md-12">
+        <h3 class="text-muted">Новая задача</h3>
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <div class="form-group">
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+            <div class="form-group">
+                {{ form_errors(form.region) }}
+                {{ form_widget(form.region) }}
+            </div>
+            <div class="form-group" data-toggle="buttons">
+                {% for top in form.top %}
+                    <label class="btn btn-primary {% if top.vars.checked == true %}active{% endif %}">
+                        {{ form_widget(top) }} {{ top.vars.label }}
+                    </label>
+                {% endfor %}
+            </div>
+            {% if form.file is defined %}
+                <div class="form-group">
+                    <p class="alert alert-{% if errorWords is defined %}danger{% else %}info{% endif %}">
+                        <strong>Выберите один из способов загрузки слов для анализа !!!</strong>
+                    </p>
+                </div>
+                <div class="form-group">
+                    <p class="text-{% if errorWords is defined %}danger{% else %}muted{% endif %}">
+                        <strong>1. Из Файла</strong>
+                    </p>
+                    <p class="alert alert-{% if errorImport is defined %}danger{% else %}warning{% endif %}">
+                        <strong>CSV файл для импорта запросов (запрос; !wordstat; страница).</strong><br>
+                        Колонка !Wordstat не обязательна.
+                        Если она пустая, то !Wordstat собирается сервисом.
+                    </p>
+                    {{ form_errors(form.file) }}
+                    {{ form_widget(form.file) }}
+                </div>
+            {% endif %}
+            <div class="form-group">
+                {% if form.file is defined %}
+                    <p class="text-{% if errorWords is defined %}danger{% else %}muted{% endif %}">
+                        <strong>2. Вручную</strong>
+                    </p>
+                    <p class="alert alert-{% if errorImport is defined %}danger{% else %}warning{% endif %}">
+                        <strong>
+                            Кластеры должны быть разделены пустой стркой.<br>
+                            Пример:
+                        </strong><br><br>
+                        <b>Страница</b><br>
+                        <i>
+                            Запрос<br>
+                            Запрос<br>
+                            Запрос<br>
+                        </i><br>
+                        <b>Страница</b><br>
+                        <i>
+                            Запрос<br>
+                            Запрос<br>
+                            Запрос
+                        </i>
+                    </p>
+                {% endif %}
+                {{ form_errors(form.textarea) }}
+                {{ form_widget(form.textarea) }}
+            </div>
+            <div class="form-group">
+                {{ form_widget(form.save) }}
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
+    <script src="{{ asset('public/js/add-task.js') }}" type="application/javascript"></script>
+{% endblock %}

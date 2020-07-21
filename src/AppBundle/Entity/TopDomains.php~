@@ -1,0 +1,43 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: rdbn
+ * Date: 16.06.16
+ * Time: 15:15
+ */
+
+namespace AppBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TopDomainsRepository")
+ * @ORM\Table(name="top_domains")
+ */
+class TopDomains
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Page", inversedBy="topDomains")
+     * @ORM\JoinColumn(name="page_id", referencedColumnName="id")
+     */
+    protected $page;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Domain")
+     * @ORM\JoinColumn(name="domain_id", referencedColumnName="id")
+     */
+    protected $domain;
+
+    /**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    protected $visible;
+}

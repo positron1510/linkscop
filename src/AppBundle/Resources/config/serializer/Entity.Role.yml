@@ -1,0 +1,9 @@
+AppBundle\Entity\Role:
+    exclusion_policy: ALL
+    properties:
+        id:    
+            expose: true
+            groups: [users]
+        name:
+            expose: true
+            groups: [users]
